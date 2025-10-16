@@ -1,0 +1,113 @@
+<div class="register-container">
+  <div class="register-card">
+    <h1 class="register-title">Registre-se</h1>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Name Field -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nome</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-input"
+          [class.error]="getFieldError('name')"
+          placeholder="José da Silva"
+        />
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') }}
+        </div>
+      </div>
+
+      <!-- E-mail Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-input"
+          [class.error]="getFieldError('email')"
+          placeholder="exemplo@e-mail.com"
+        />
+        <div class="error-message" *ngIf="getFieldError('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">Senha</label>
+        <div class="password-input-container">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="form-input password-input"
+            [class.error]="getFieldError('password')"
+            placeholder="Digite sua senha"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path *ngIf="!showPassword()" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle *ngIf="!showPassword()" cx="12" cy="12" r="3"/>
+              <path *ngIf="showPassword()" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line *ngIf="showPassword()" x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="getFieldError('password')">
+          {{ getFieldError('password') }}
+        </div>
+      </div>
+
+      <!-- Terms and Conditions Checkbox -->
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            formControlName="agreeTerms"
+            class="checkbox-input"
+          />
+          <span class="checkbox-text">
+            Estou de acordo com os
+            <a href="#" class="terms-link" (click)="goToTerms(); $event.preventDefault()">
+              Termos de Privacidade
+            </a>
+          </span>
+        </label>
+        <div class="error-message" *ngIf="getFieldError('agreeTerms')">
+          {{ getFieldError('agreeTerms') }}
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message global-error" *ngIf="errorMessage()">
+        {{ errorMessage() }}
+      </div>
+
+      <!-- Register Button -->
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="isLoading()"
+      >
+        <span *ngIf="!isLoading()">Registrar</span>
+        <span *ngIf="isLoading()">Registrando...</span>
+      </button>
+
+      <!-- Login Link -->
+      <div class="login-link-container">
+        <span class="login-text">Já tem uma conta?</span>
+        <a href="#" class="login-link" (click)="goToLogin(); $event.preventDefault()">
+          Entrar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

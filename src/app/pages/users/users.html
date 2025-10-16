@@ -1,0 +1,355 @@
+<div class="users-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <h1>Atenas Financeiro</h1>
+      </div>
+
+      <div class="header-actions">
+        <div class="user-info">
+          <span class="user-name">{{ currentUser()?.name }}</span>
+          <span class="user-role">{{ currentUser()?.role === 'ADMIN' ? 'Administrador' : 'Usuário' }}</span>
+        </div>
+
+        <button class="menu-toggle" (click)="toggleMenu()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Menu -->
+  <nav class="navigation" [class.open]="isMenuOpen()">
+    <div class="nav-content">
+      <ul class="nav-list">
+        <!-- Início -->
+        <li class="nav-item">
+          <button
+            class="nav-button"
+            [class.active]="activeMenu() === 'home'"
+            (click)="goToHome()"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9,22 9,12 15,12 15,22"/>
+            </svg>
+            <span>Início</span>
+          </button>
+        </li>
+
+        <!-- Cadastros -->
+        <li class="nav-item dropdown">
+          <button
+            class="nav-button dropdown-toggle"
+            [class.active]="activeMenu() === 'users'"
+            (click)="setActiveMenu(activeMenu() === 'users' ? '' : 'users')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Cadastros</span>
+            <svg
+              class="dropdown-arrow"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              [class.rotated]="activeMenu() === 'users'"
+            >
+              <polyline points="6,9 12,15 18,9"/>
+            </svg>
+          </button>
+
+          <ul class="dropdown-menu" [class.show]="activeMenu() === 'users'">
+            <li class="dropdown-item">
+              <button
+                class="dropdown-button active"
+                (click)="goToUsers()"
+                *ngIf="isAdmin()"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Usuários</span>
+              </button>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Lançamentos -->
+        <li class="nav-item dropdown">
+          <button
+            class="nav-button dropdown-toggle"
+            [class.active]="activeMenu() === 'revenue' || activeMenu() === 'expenses'"
+            (click)="setActiveMenu(activeMenu() === 'transactions' ? '' : 'transactions')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <span>Lançamentos</span>
+            <svg
+              class="dropdown-arrow"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              [class.rotated]="activeMenu() === 'transactions'"
+            >
+              <polyline points="6,9 12,15 18,9"/>
+            </svg>
+          </button>
+
+          <ul class="dropdown-menu" [class.show]="activeMenu() === 'transactions'">
+            <li class="dropdown-item">
+              <button
+                class="dropdown-button"
+                (click)="goToRevenue()"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span>Receita</span>
+              </button>
+            </li>
+            <li class="dropdown-item">
+              <button
+                class="dropdown-button"
+                (click)="goToExpenses()"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l-3.09 6.26L2 9.27l5 4.87-1.18 6.88L12 17.77l6.18 3.25L17 14.14l5-4.87-6.91-1.01L12 2z"/>
+                </svg>
+                <span>Despesa</span>
+              </button>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Logout Button -->
+      <div class="nav-footer">
+        <button class="logout-button" (click)="logout()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16,17 21,12 16,7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-header">
+      <div class="header-title">
+        <h2>Gerenciamento de Usuários</h2>
+        <p>Gerencie os usuários do sistema</p>
+      </div>
+      <button class="btn-primary" (click)="openCreateModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>Novo Usuário</span>
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="success-message" *ngIf="successMessage()">
+      {{ successMessage() }}
+    </div>
+    <div class="error-message" *ngIf="errorMessage() && !showModal()">
+      {{ errorMessage() }}
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+      <div class="loading-overlay" *ngIf="isLoading()">
+        <div class="spinner"></div>
+        <span>Carregando...</span>
+      </div>
+
+      <table class="users-table" *ngIf="!isLoading() && users().length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users()">
+            <td>{{ user.id }}</td>
+            <td>
+              <div class="user-info-cell">
+                <div class="user-avatar">
+                  {{ user.name.charAt(0).toUpperCase() }}
+                </div>
+                <span>{{ user.name }}</span>
+              </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="role-badge" [class.admin]="user.role === 'ADMIN'">
+                {{ user.role === 'ADMIN' ? 'Administrador' : 'Usuário' }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-icon btn-edit" (click)="openEditModal(user)" title="Editar">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                </button>
+                <button
+                  class="btn-icon btn-delete"
+                  (click)="deleteUser(user)"
+                  [disabled]="user.id === currentUser()?.id"
+                  title="Excluir"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3,6 5,6 21,6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="empty-state" *ngIf="!isLoading() && users().length === 0">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <h3>Nenhum usuário encontrado</h3>
+        <p>Comece criando seu primeiro usuário</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal()" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingUser() ? 'Editar Usuário' : 'Novo Usuário' }}</h2>
+      <button class="btn-close" (click)="closeModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="modal-form">
+      <!-- Nome -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nome</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-input"
+          [class.error]="getFieldError('name')"
+          placeholder="Nome completo"
+        />
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') }}
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-input"
+          [class.error]="getFieldError('email')"
+          placeholder="email@exemplo.com"
+        />
+        <div class="error-message" *ngIf="getFieldError('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <!-- Senha -->
+      <div class="form-group">
+        <label for="password" class="form-label">
+          Senha
+          <span *ngIf="editingUser()" class="optional-label">(deixe em branco para não alterar)</span>
+        </label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-input"
+          [class.error]="getFieldError('password')"
+          placeholder="Digite a senha"
+        />
+        <div class="error-message" *ngIf="getFieldError('password')">
+          {{ getFieldError('password') }}
+        </div>
+      </div>
+
+      <!-- Perfil -->
+      <div class="form-group">
+        <label for="role" class="form-label">Perfil</label>
+        <select
+          id="role"
+          formControlName="role"
+          class="form-input"
+        >
+          <option value="USER">Usuário</option>
+          <option value="ADMIN">Administrador</option>
+        </select>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message global-error" *ngIf="errorMessage()">
+        {{ errorMessage() }}
+      </div>
+
+      <!-- Success Message -->
+      <div class="success-message" *ngIf="successMessage()">
+        {{ successMessage() }}
+      </div>
+
+      <!-- Buttons -->
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="isLoading()">
+          <span *ngIf="!isLoading()">{{ editingUser() ? 'Salvar' : 'Criar' }}</span>
+          <span *ngIf="isLoading()">Salvando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-overlay" [class.show]="isMenuOpen()" (click)="toggleMenu()"></div>
+
